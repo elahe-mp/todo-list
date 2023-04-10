@@ -1,59 +1,54 @@
-const TodoForm = () => {
-  return (
-    <>
-      <form action="">
-        <fieldset>
-          <legend>Information to be registered on the todo list</legend>
-          <fieldset>
-            <legend>Personal Data</legend>
-            <input type="text" name="fname" placeholder="First Name" required />
-            <input type="text" name="lname" placeholder="Last Name" required />
-            <input
-              type="text"
-              name="email"
-              placeholder="Email address"
-              required
-            />
-          </fieldset>
-          <fieldset>
-            <legend>Gender</legend>
-            <label>
-              <input type="radio" id="male" name="gender" value="male" checked />
-              Male
-            </label>
-            <label>
-              <input type="radio" id="female" name="gender" value="female" />
-              Female
-            </label>
-          </fieldset>
-          <fieldset>
-            <legend>Task</legend>
-            <input type="text" name="task" placeholder="Task" required />
-          </fieldset>
-          <fieldset>
-            <legend>Type of Task</legend>
-            <label>
-              <input type="checkbox" id="hobby" name="hobby" value="hobby" />
-              Hobby
-            </label>
-            <label>
-              <input type="checkbox" id="work" name="work" value="work" />
-              Work
-            </label>
-            <label>
-              <input type="checkbox" id="study" name="study" value="study" />
-              Study
-            </label>
-            <label>
-              <input type="checkbox" id="others" name="others" value="others"/>
-              Other Categories
-            </label>
-          </fieldset>
+import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
 
-          <button type="submit">Submit</button>
-        </fieldset>
-      </form>
-    </>
-  );
+const TodoForm: FC = () => {
+    const [data, setData] = useState<string>("");
+    const [list, setList] = useState<string[]>([]);
+
+    const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+        e.preventDefault();
+      setList([data, ...list]);
+      setData("");
+   }
+
+    const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        setData(e.target.value);
+    };
+    
+    return (
+      <>
+        <form
+          className="form"
+          action="http://localhost:3000/"
+          onSubmit={onSubmit}
+        >
+          <fieldset className="todoForm">
+            <legend> Your To do List</legend>
+            <label htmlFor="todo">
+              <input
+                type="text"
+                name="todo"
+                placeholder="Your to do list"
+                required
+                id="todo"
+                onChange={onChange}
+                value={data}
+              />
+            </label>
+            <button type="submit">Submit</button>
+          </fieldset>
+        </form>
+
+        <div className="todoList">
+          <fieldset className="list">
+            <legend className="listTitle">Your List</legend>
+            {list.map((data: string, index: number) => (
+              <ul key={index}>
+                <li>{data}</li>
+              </ul>
+            ))}
+          </fieldset>
+        </div>
+      </>
+    );    
 };
 export default TodoForm;
