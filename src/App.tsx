@@ -8,8 +8,10 @@ function App() {
       <Helmet>
         <title>TodoList | MiniApp </title>
       </Helmet>
-      <h1>Todo List</h1>
-      <TodoForm/>
+      <h1>Todo List page</h1>
+      <TodoForm />
+      <article className='list'>
+      </article>
     </>
   );
 }
