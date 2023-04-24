@@ -7,7 +7,7 @@ const TodoListPage: FC = () => {
     return (
     <>
       <h1>Todo List page</h1>
-          <TodoForm list={list} handleUpdateList={setList}/>
+          <TodoForm list={list} handleUpdateList={setList} todo=""/>
           <TodoList list={list} />
     </>
   );
