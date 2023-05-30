@@ -1,18 +1,17 @@
-import { FC } from "react";
 
 interface ITodoList {
-  list: string[];
+  todoItem: {todo:string, id:string}[];
 }
 
-const TodoList: FC<ITodoList> = (props) => {
-  const { list } = props;
+const TodoList: React.FC<ITodoList> = (props) => {
+  const { todoItem } = props;
   return (
-    <div className="todoList">
-      <fieldset className="list">
-        <legend className="listTitle">Your List</legend>
-        {list.map((data: string, index: number) => (
-          <ul key={index}>
-            <li>{data}</li>
+    <div className="todoItem">
+      <fieldset className="todoItem">
+        <legend className="todoItemTitle">Your todoList</legend>
+        {todoItem.map((inputValue: { todo: string,  id:string}) => (
+          <ul key={inputValue.id}>
+            <li>Todo "{inputValue.todo}" with unique id of "{inputValue.id}"</li>
           </ul>
         ))}
       </fieldset>

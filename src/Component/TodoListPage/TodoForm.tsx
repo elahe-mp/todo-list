@@ -1,31 +1,34 @@
-import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
-import { useForm } from 'react-hook-form';
-import { FormState } from "react-hook-form";
-
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface ITodoForm {
-  list: string[]
-  handleUpdateList: (data: string[]) => void 
+  todoItem: {
+    todo: string;
+     id:string}[];
+  handleUpdateTodoItem: (inputValue: { todo: string; id:string}[]) => void;
   todo: string;
 }
 
-const TodoForm: FC<ITodoForm> = (props) => {
-  const { list, handleUpdateList} = props;
-  const [data, setData] = useState<string>("");
-  const { register, handleSubmit, formState: {errors}} = useForm<ITodoForm>();
+const TodoForm: React.FC<ITodoForm> = (props) => {
+  const { todoItem, handleUpdateTodoItem } = props;
+  const [inputValue, setInputValue] = useState<string>("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ITodoForm>();
 
-  const onSubmit= handleSubmit((data: ITodoForm) => {
-    // console.log(data)
-    handleUpdateList([data.todo, ...list]);
-    setData("");
+  const onSubmit = handleSubmit((inputValue: ITodoForm) => {
+    const newTodoItem = {
+      todo: inputValue.todo,
+      id: `todo-${todoItem.length}`,
+    }
+    handleUpdateTodoItem([...todoItem, newTodoItem]);
+    setInputValue("");
   });
-
-  const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setData(e.target.value);
+  const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    setInputValue(e.target.value);
   };
-
-
-
 
   return (
     <>
@@ -35,16 +38,16 @@ const TodoForm: FC<ITodoForm> = (props) => {
         onSubmit={onSubmit}
       >
         <fieldset className="todoForm">
-          <legend> Your To do List</legend>
+          <legend> Your Todo Form</legend>
           <label htmlFor="todo">
             <input
               {...register("todo", { required: true, minLength: 2 })}
               type="text"
               name="todo"
-              placeholder="Your to do list"
+              placeholder="Enter your todo item here..."
               id="todo"
               onChange={onChange}
-              value={data}
+              value={inputValue}
             />
             {errors.todo && errors.todo.type === "required" && (
               <span className="error">This field is required</span>
