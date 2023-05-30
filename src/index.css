@@ -30,7 +30,7 @@ h1{
 }
 
 .form {
-  width: 100%;
+  width: 90%;
   margin: 0 auto;
   text-align: center;
   padding: 20px;
@@ -63,7 +63,7 @@ button[type="submit"] {
 }
 
 .list{
-    width: 100%;
+    width: 90%;
   margin: 0 auto;
   text-align: left;
   padding: 20px;
@@ -72,4 +72,8 @@ button[type="submit"] {
 }
 .listTitle{
   text-align: center;
+}
+
+.error{
+  color: red;
 }
