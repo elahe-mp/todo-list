@@ -16,6 +16,7 @@ const TodoForm: React.FC<ITodoForm> = (props) => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<ITodoForm>();
 
   const onSubmit = handleSubmit((inputValue: ITodoForm) => {
@@ -24,11 +25,8 @@ const TodoForm: React.FC<ITodoForm> = (props) => {
       id: `todo-${todoItem.length}`,
     }
     handleUpdateTodoItem([...todoItem, newTodoItem]);
-    setInputValue("");
+    reset();
   });
-  const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setInputValue(e.target.value);
-  };
 
   return (
     <>
@@ -43,11 +41,8 @@ const TodoForm: React.FC<ITodoForm> = (props) => {
             <input
               {...register("todo", { required: true, minLength: 2 })}
               type="text"
-              name="todo"
               placeholder="Enter your todo item here..."
               id="todo"
-              onChange={onChange}
-              value={inputValue}
             />
             {errors.todo && errors.todo.type === "required" && (
               <span className="error">This field is required</span>
