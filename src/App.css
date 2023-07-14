@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+th{
+  background-color: lightgray;
+  border: 1px gray solid;
+}
+
+table{
+  width: 100%;
+  text-align: center;
+  border: 1px gray solid;
+}
+td, tr {
+  border: 1px gray solid;
+}
+.edit-btn,.delete-btn {
+  width: 25%;
+  margin: 2px;
+}
