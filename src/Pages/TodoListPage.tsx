@@ -3,28 +3,27 @@ import TodoForm from "../Component/TodoListPage/TodoForm";
 import TodoList from "../Component/TodoListPage/TodoList";
 
 const TodoListPage: React.FC = () => {
-  const [todoItem, setTodoItem] = useState<
+  const [todoItems, setTodoItem] = useState<
     { todo: string; id: number; userName: string }[]
   >([]);
   const [currentId, setCurrentId] = useState(1);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const handleUpdateDelete = (todoId: number) => {
-    const newTodoItem = todoItem.filter((todo) => todo.id !== todoId);
+    const newTodoItem = todoItems.filter((todo) => todo.id !== todoId);
     setTodoItem(newTodoItem);
   };
 
   const handleUpdateEdit = (todoId: number) => {
     setSelectedId(todoId);
-    // console.log(selectedId);
   };
 
   return (
     <>
       <h1>Todo List page</h1>
       <TodoForm
-        todoItem={todoItem}
-        handleUpdateTodoItem={setTodoItem}
+        todoItems={todoItems}
+        handleUpdateTodoItems={setTodoItem}
         todo=""
         userName=""
         currentId={currentId}
@@ -33,7 +32,7 @@ const TodoListPage: React.FC = () => {
         handleUpdateEdit={setSelectedId}
       />
       <TodoList
-        todoItem={todoItem}
+        todoItems={todoItems}
         handleUpdateDelete={handleUpdateDelete}
         currentId={currentId}
         handleUpdateEdit={handleUpdateEdit}

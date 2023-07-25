@@ -1,12 +1,12 @@
 interface ITodoList {
-  todoItem: { todo: string; id: number; userName: string }[];
+  todoItems: { todo: string; id: number; userName: string }[];
   handleUpdateDelete: (id: number) => void;
   currentId: number;
   handleUpdateEdit: (id: number) => void;
 }
 
 const TodoList: React.FC<ITodoList> = ({
-  todoItem,
+  todoItems,
   handleUpdateDelete,
   handleUpdateEdit,
 }) => {
@@ -25,7 +25,7 @@ const TodoList: React.FC<ITodoList> = ({
             </tr>
           </thead>
           <tbody>
-            {todoItem.map(
+            {todoItems.map(
               (inputValue: { todo: string; id: number; userName: string }) => (
                 <tr key={inputValue.id}>
                   <td>{inputValue.id}</td>

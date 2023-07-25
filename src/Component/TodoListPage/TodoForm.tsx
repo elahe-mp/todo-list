@@ -1,15 +1,14 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 
 interface ITodoForm {
-  todoItem: {
+  todoItems: {
     userName: string;
     todo: string;
     id: number;
   }[];
 
-
-  handleUpdateTodoItem: (
+  handleUpdateTodoItems: (
     inputValue: { todo: string; id: number; userName: string }[]
   ) => void;
 
@@ -23,106 +22,106 @@ interface ITodoForm {
 }
 
 const TodoForm: React.FC<ITodoForm> = ({
-  todoItem,
-  handleUpdateTodoItem,
+  todoItems,
+  handleUpdateTodoItems,
   currentId,
   handleUpdateId,
   selectedId,
   handleUpdateEdit,
 }) => {
-  // const {
-  //   todoItem,
-  //   handleUpdateTodoItem,
-  //   currentId,
-  //   handleUpdateId,
-  //   selectedId,
-  //   handleUpdateEdit,
-  // } = props;
-  // is it better to destructure the props in the funtion parameters instead of using props object?
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful, isDirty, isSubmitting },
     reset,
     setValue,
-  } = useForm<ITodoForm>();
+    // setError,
+  } = useForm<ITodoForm>({
+    defaultValues: {
+      userName: "",
+      todo: "",
+    },
+  });
 
   useEffect(() => {
     if (selectedId !== null) {
-      const selectedTodo = todoItem.find((item) => item.id === selectedId);
+      const selectedTodo = todoItems.find((item) => item.id === selectedId);
       if (selectedTodo) {
         setValue("userName", selectedTodo.userName);
         setValue("todo", selectedTodo.todo);
       }
     }
-  }, [setValue, reset, selectedId, todoItem]);
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [setValue, selectedId, todoItems, isSubmitSuccessful, reset]);
 
-  const onSubmit = handleSubmit((inputValue: ITodoForm) => {
-    // edit an existing todo
+  const onSubmit = (data: FieldValues) => {
+    // Edit an existing item
     if (selectedId !== null) {
-      const updateTodoItem = todoItem.map((item) =>
+      const updateTodoItems = todoItems.map((item) =>
         item.id === selectedId
-          ? { ...item, todo: inputValue.todo, userName: inputValue.userName }
+          ? { ...item, todo: data.todo, userName: data.userName }
           : item
       );
-      handleUpdateTodoItem(updateTodoItem);
+      handleUpdateTodoItems(updateTodoItems);
       handleUpdateEdit(null);
     }
-    //add a new todo
+    //Add a new item
     else {
       const newTodoItem = {
-        todo: inputValue.todo,
+        todo: data.todo,
         id: currentId,
-        userName: inputValue.userName,
+        userName: data.userName,
       };
-      handleUpdateTodoItem([...todoItem, newTodoItem]);
+      handleUpdateTodoItems([...todoItems, newTodoItem]);
       handleUpdateId(currentId + 1);
     }
-    reset();
-  });
+  };
 
   return (
     <>
-      <form
-        className="form"
-        action="http://localhost:3001/"
-        onSubmit={onSubmit}
-      >
+      <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <fieldset className="todoForm">
           <legend> Your Todo Form</legend>
           <label htmlFor="todo">
             <input
-              {...register("userName", { required: true, minLength: 2 })}
+              {...register("userName", {
+                required: { value: true, message: "his field is required" },
+                minLength: {
+                  value: 2,
+                  message: "Must be at least 2 characters long",
+                },
+              })}
               type="text"
               placeholder="Enter your name..."
               id="userName"
               autoComplete="off"
             />
 
-            {errors.userName && errors.userName.type === "required" && (
-              <span className="error">This field is required</span>
-            )}
-            {errors.userName && errors.userName.type === "minLength" && (
-              <span className="error">Must be at least 2 characters long</span>
+            {errors.userName && errors.userName.type && (
+              <span className="error">{errors.userName?.message}</span>
             )}
 
             <input
-              {...register("todo", { required: true, minLength: 2 })}
+              {...register("todo", {
+                required: { value: true, message: "his field is required" },
+                minLength: {
+                  value: 2,
+                  message: "Must be at least 2 characters long",
+                },
+              })}
               type="text"
               placeholder="Enter your todo task..."
               id="todo"
-              autoComplete="off" // for turning off the autocompletion on form input
-              //when using a react hook form we do not need name, inputValue and onChange here
+              autoComplete="off"
             />
 
-            {errors.todo && errors.todo.type === "required" && (
-              <span className="error">This field is required</span>
-            )}
-            {errors.todo && errors.todo.type === "minLength" && (
-              <span className="error">Must be at least 2 characters long</span>
+            {errors.todo && errors.todo.type && (
+              <span className="error">{errors.todo?.message};</span>
             )}
           </label>
-          <button type="submit">
+          <button type="submit" disabled={!isDirty || isSubmitting}>
             {selectedId !== null ? "Edit" : "Submit"}
           </button>
         </fieldset>
