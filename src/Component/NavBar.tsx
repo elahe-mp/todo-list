@@ -7,6 +7,7 @@ import {
   Button,
 } from "@mui/material";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
+import { Link } from "react-router-dom";
 
 const NavBar: React.FC = () => {
   return (
@@ -19,14 +20,13 @@ const NavBar: React.FC = () => {
           Eli's MINI Project
         </Typography>
         <Stack direction="row" spacing={2}>
-          {/* dont forget to complete the onclick events to route to the specific pages */}
-          <Button color="inherit" onClick={() => {}}>
+          <Button color="inherit" component={Link} to="/">
             Home
           </Button>
-          <Button color="inherit" onClick={() => {}}>
+          <Button color="inherit" component={Link} to="/gallery">
             Gallery
           </Button>
-          <Button color="inherit" onClick={() => {}}>
+          <Button color="inherit" component={Link} to="/about">
             About Me
           </Button>
         </Stack>

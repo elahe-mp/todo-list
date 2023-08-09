@@ -1,17 +1,19 @@
 import "./App.css";
 import Home from "./Component/Pages/Home";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Gallery from "./Component/Pages/GalleryPage/Gallery";
 import NavBar from "./Component/NavBar";
+import About from "./Component/Pages/AboutPage/About";
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <NavBar />
       <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/gallery" element={<Gallery />}></Route>
+        <Route path="/" element={<Home />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/about" element={<About />} />
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 
