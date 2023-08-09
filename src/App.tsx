@@ -1,15 +1,18 @@
-import { Helmet } from 'react-helmet';
-import './App.css';
-import TodoListPage from './Pages/TodoListPage';
-
+import "./App.css";
+import Home from "./Component/Pages/Home";
+import { Routes, Route } from "react-router-dom";
+import Gallery from "./Component/Pages/GalleryPage/Gallery";
+import NavBar from "./Component/NavBar";
+import About from "./Component/Pages/AboutPage/About";
 function App() {
   return (
-   <>
-      <Helmet>
-        <title>TodoList | MiniApp </title>
-      </Helmet>
-
-      <TodoListPage />
+    <>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
     </>
   );
 }
