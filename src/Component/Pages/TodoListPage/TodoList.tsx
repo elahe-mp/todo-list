@@ -8,11 +8,13 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Modal,
+  Button,
 } from "@mui/material";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
-import { TypeFormatFlags } from "typescript";
+import { useState } from "react";
 
 interface ITodoList {
   todoItems: { todo: string; id: number; userName: string }[];
@@ -26,6 +28,8 @@ const TodoList: React.FC<ITodoList> = ({
   handleUpdateDelete,
   handleUpdateEdit,
 }) => {
+  const [openModal, setOpenModal] = useState(false);
+
   return (
     <>
       {todoItems.length > 0 && (
@@ -66,9 +70,46 @@ const TodoList: React.FC<ITodoList> = ({
                           <EditOutlinedIcon
                             onClick={() => handleUpdateEdit(inputValue.id)}
                           />
+
                           <DeleteForeverOutlinedIcon
-                            onClick={() => handleUpdateDelete(inputValue.id)}
+                            onClick={() => setOpenModal(true)}
                           />
+                          <Modal
+                            open={openModal}
+                            onClose={() => setOpenModal(false)}
+                          >
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                width: 400,
+                                bgcolor: "background.paper",
+                                border: "2px solid #000",
+                                boxShadow: 24,
+                                p: 4,
+                                textAlign: "center",
+                              }}
+                            >
+                              <Typography marginBottom={2} variant="subtitle2">
+                                Are you sure you want to delete the task?
+                              </Typography>
+                              <Box sx={{ textAlign: "center" }}>
+                                <Button
+                                  color="warning"
+                                  sx={{ textAlign: "center" }}
+                                  variant="contained"
+                                  onClick={() => {
+                                    handleUpdateDelete(inputValue.id);
+                                    setOpenModal(false);
+                                  }}
+                                >
+                                  Yes delete it
+                                </Button>
+                              </Box>
+                            </Box>
+                          </Modal>
                         </TableCell>
                       </TableRow>
                     )

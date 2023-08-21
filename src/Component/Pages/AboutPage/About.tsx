@@ -1,6 +1,6 @@
 import { Paper, Box, Typography } from "@mui/material";
 
-const About = () => {
+const About: React.FC = () => {
   return (
     <Paper sx={{ margin: 5, padding: 5 }}>
       <Box paddingX={3} paddingBottom={3} maxWidth="inherit">

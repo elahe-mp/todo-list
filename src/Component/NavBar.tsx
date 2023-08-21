@@ -7,9 +7,10 @@ import {
   Button,
 } from "@mui/material";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const NavBar: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <AppBar position="static">
       <Toolbar>
@@ -20,12 +21,13 @@ const NavBar: React.FC = () => {
           Eli's MINI Project
         </Typography>
         <Stack direction="row" spacing={2}>
-          <Button color="inherit" component={Link} to="/">
+          <Button color="inherit" onClick={() => navigate("/")}>
             Home
           </Button>
-          <Button color="inherit" component={Link} to="/gallery">
+          <Button color="inherit" onClick={() => navigate("/gallery")}>
             Gallery
           </Button>
+          {/* which one is better the above code with onclick event or the below one? */}
           <Button color="inherit" component={Link} to="/about">
             About Me
           </Button>
