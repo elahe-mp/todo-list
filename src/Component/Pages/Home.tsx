@@ -1,5 +1,5 @@
 import { Container, Box } from "@mui/material";
-import TodoListPage from "../../Pages/TodoListPage";
+import TodoListPage from "./TodoListPage";
 import { Helmet } from "react-helmet";
 
 const Home = () => {

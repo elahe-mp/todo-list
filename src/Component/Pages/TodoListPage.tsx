@@ -1,14 +1,23 @@
-import { useState } from "react";
-import TodoForm from "../Component/Pages/TodoListPage/TodoForm";
-import TodoList from "../Component/Pages/TodoListPage/TodoList";
+import { useEffect, useState } from "react";
+import TodoForm from "./TodoListPage/TodoForm";
+import TodoList from "./TodoListPage/TodoList";
 import { Typography, Box } from "@mui/material";
 
 const TodoListPage: React.FC = () => {
   const [todoItems, setTodoItem] = useState<
     { todo: string; id: number; userName: string }[]
-  >([]);
+  >(() => {
+    const storedTodo = localStorage.getItem("todo-items");
+    return storedTodo ? JSON.parse(storedTodo) : [];
+  });
+
   const [currentId, setCurrentId] = useState(1);
+
   const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem("todo-items", JSON.stringify(todoItems));
+  }, [todoItems]);
 
   const handleUpdateDelete = (todoId: number) => {
     const newTodoItem = todoItems.filter((todo) => todo.id !== todoId);
