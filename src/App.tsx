@@ -5,6 +5,8 @@ import { Routes, Route } from "react-router-dom";
 import NavBar from "./Component/NavBar";
 import About from "./Component/Pages/AboutPage/About";
 import NoMatch from "./Component/Pages/NoMatch";
+import Post from "./Component/Pages/PostPage/Post";
+import Posts from "./Component/Pages/PostPage/Post";
 // import ImageDetails from "./Component/Pages/GalleryPage/Gallery/ImageDetails";
 const LazyGallery = React.lazy(
   () => import("./Component/Pages/GalleryPage/Gallery")
@@ -35,6 +37,7 @@ function App() {
             </React.Suspense>
           }
         />
+        <Route path="/post" element={<Post />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
