@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { FieldValues, useForm, Controller } from "react-hook-form";
 import {
   Button,
@@ -10,25 +10,26 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CreateTwoToneIcon from "@mui/icons-material/CreateTwoTone";
+import { v4 as uuidv4 } from "uuid";
 
 interface ITodoForm {
   todoItems: {
     userName: string;
     todo: string;
-    id: number;
+    id: string;
   }[];
 
   handleUpdateTodoItems: (
-    inputValue: { todo: string; id: number; userName: string }[]
+    inputValue: { todo: string; id: string; userName: string }[]
   ) => void;
 
-  handleUpdateId: (currentId: number) => void;
+  handleUpdateId: (currentId: string) => void;
   todo: string;
   userName: string;
-  currentId: number;
+  currentId: string;
 
-  selectedId: null | number;
-  handleUpdateEdit: (selectedId: null | number) => void;
+  selectedId: null | string;
+  handleUpdateEdit: (selectedId: null | string) => void;
 }
 
 const TodoForm: React.FC<ITodoForm> = ({
@@ -86,12 +87,12 @@ const TodoForm: React.FC<ITodoForm> = ({
         userName: data.userName,
       };
       handleUpdateTodoItems([...todoItems, newTodoItem]);
-      handleUpdateId(currentId + 1);
+      handleUpdateId(uuidv4());
     }
   };
 
   return (
-    <>
+    <React.Fragment>
       <Paper elevation={3}>
         <Box sx={{ display: "-webkit-inline-flex", alignItems: "center" }}>
           <CreateTwoToneIcon sx={{ width: 20 }} />
@@ -157,7 +158,7 @@ const TodoForm: React.FC<ITodoForm> = ({
           </form>
         </Stack>
       </Paper>
-    </>
+    </React.Fragment>
   );
 };
 export default TodoForm;

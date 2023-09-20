@@ -1,35 +1,36 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import TodoForm from "./TodoListPage/TodoForm";
 import TodoList from "./TodoListPage/TodoList";
 import { Typography, Box } from "@mui/material";
+import { v4 as uuidv4 } from "uuid";
 
 const TodoListPage: React.FC = () => {
   const [todoItems, setTodoItem] = useState<
-    { todo: string; id: number; userName: string }[]
+    { todo: string; id: string; userName: string }[]
   >(() => {
     const storedTodo = localStorage.getItem("todo-items");
     return storedTodo ? JSON.parse(storedTodo) : [];
   });
 
-  const [currentId, setCurrentId] = useState(1);
+  const [currentId, setCurrentId] = useState(uuidv4());
 
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
     localStorage.setItem("todo-items", JSON.stringify(todoItems));
   }, [todoItems]);
 
-  const handleUpdateDelete = (todoId: number) => {
+  const handleUpdateDelete = (todoId: string) => {
     const newTodoItem = todoItems.filter((todo) => todo.id !== todoId);
     setTodoItem(newTodoItem);
   };
 
-  const handleUpdateEdit = (todoId: number) => {
+  const handleUpdateEdit = (todoId: string) => {
     setSelectedId(todoId);
   };
 
   return (
-    <>
+    <React.Fragment>
       <Box textAlign="center">
         <Typography variant="h3" component="h1" gutterBottom mt={2}>
           Todo List page
@@ -53,7 +54,7 @@ const TodoListPage: React.FC = () => {
           handleUpdateEdit={handleUpdateEdit}
         />
       </Box>
-    </>
+    </React.Fragment>
   );
 };
 export default TodoListPage;

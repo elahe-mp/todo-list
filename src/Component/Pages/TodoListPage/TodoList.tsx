@@ -14,13 +14,13 @@ import {
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface ITodoList {
-  todoItems: { todo: string; id: number; userName: string }[];
-  handleUpdateDelete: (id: number) => void;
-  currentId: number;
-  handleUpdateEdit: (id: number) => void;
+  todoItems: { todo: string; id: string; userName: string }[];
+  handleUpdateDelete: (id: string) => void;
+  currentId: string;
+  handleUpdateEdit: (id: string) => void;
 }
 
 const TodoList: React.FC<ITodoList> = ({
@@ -28,10 +28,29 @@ const TodoList: React.FC<ITodoList> = ({
   handleUpdateDelete,
   handleUpdateEdit,
 }) => {
-  const [openModal, setOpenModal] = useState(false);
+  const [openModals, setOpenModals] = useState<boolean[]>(
+    new Array(todoItems.length).fill(false)
+  );
+
+  const openModal = (index: number) => {
+    const newOpenModals = [...openModals];
+    newOpenModals[index] = true;
+    setOpenModals(newOpenModals);
+  };
+  const closeModal = (index: number) => {
+    const newOpenModals = [...openModals];
+    newOpenModals[index] = false;
+    setOpenModals(newOpenModals);
+  };
+
+  useEffect(() => {
+    if (todoItems.length !== openModals.length) {
+      setOpenModals(new Array(todoItems.length).fill(false));
+    }
+  }, [todoItems, openModals.length]);
 
   return (
-    <>
+    <React.Fragment>
       {todoItems.length > 0 && (
         <Paper elevation={3}>
           <Box paddingX={3} paddingBottom={3}>
@@ -47,7 +66,7 @@ const TodoList: React.FC<ITodoList> = ({
                       backgroundColor: "lightblue",
                     }}
                   >
-                    <TableCell align="center">Id</TableCell>
+                    <TableCell align="center">Unique UUId</TableCell>
                     <TableCell align="center">Name</TableCell>
                     <TableCell align="center">Todo Task</TableCell>
                     <TableCell align="center">Actions</TableCell>
@@ -55,11 +74,14 @@ const TodoList: React.FC<ITodoList> = ({
                 </TableHead>
                 <TableBody>
                   {todoItems.map(
-                    (inputValue: {
-                      todo: string;
-                      id: number;
-                      userName: string;
-                    }) => (
+                    (
+                      inputValue: {
+                        todo: string;
+                        id: string;
+                        userName: string;
+                      },
+                      index: number
+                    ) => (
                       <TableRow key={inputValue.id}>
                         <TableCell align="center">{inputValue.id}</TableCell>
                         <TableCell align="center">
@@ -72,11 +94,11 @@ const TodoList: React.FC<ITodoList> = ({
                           />
 
                           <DeleteForeverOutlinedIcon
-                            onClick={() => setOpenModal(true)}
+                            onClick={() => openModal(index)}
                           />
                           <Modal
-                            open={openModal}
-                            onClose={() => setOpenModal(false)}
+                            open={openModals[index] ?? false}
+                            onClose={() => closeModal(index)}
                           >
                             <Box
                               sx={{
@@ -101,7 +123,7 @@ const TodoList: React.FC<ITodoList> = ({
                                   variant="contained"
                                   onClick={() => {
                                     handleUpdateDelete(inputValue.id);
-                                    setOpenModal(false);
+                                    closeModal(index);
                                   }}
                                 >
                                   Yes delete it
@@ -119,7 +141,7 @@ const TodoList: React.FC<ITodoList> = ({
           </Box>
         </Paper>
       )}
-    </>
+    </React.Fragment>
   );
 };
 export default TodoList;
