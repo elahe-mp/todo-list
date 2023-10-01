@@ -1,5 +1,4 @@
 import { Paper, Box, Card, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
 
 interface IPost {
   userId: number;
@@ -7,23 +6,12 @@ interface IPost {
   title: string;
   body: string;
 }
-
-const Post: React.FC = () => {
-  const [posts, setPosts] = useState<IPost[]>([]);
-  useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/posts")
-      .then((res) => res.json())
-      .then((data) => {
-        setPosts(data);
-        // console.log(posts);
-      });
-  }, []);
-
+const Post: React.FC<{ currentPosts: IPost[] }> = ({ currentPosts }) => {
   return (
-    <Paper sx={{ margin: 5, padding: 5 }}>
-      <Box paddingX={3} paddingBottom={3} maxWidth="inherit">
-        {posts.map((post) => (
-          <Card key={post.id} sx={{ marginBottom: 2, padding: 5 }}>
+    <Paper sx={{ margin: 2, padding: 2 }}>
+      <Box paddingX={2} paddingBottom={2} maxWidth="inherit">
+        {currentPosts.map((post) => (
+          <Card key={post.id} sx={{ marginBottom: 1, padding: 1 }}>
             <Typography variant="h6">{post.title}</Typography>
             <Typography variant="body1">{post.body}</Typography>
           </Card>
