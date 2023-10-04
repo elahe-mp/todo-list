@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const TodoListPage: React.FC = () => {
   const [todoItems, setTodoItem] = useState<
-    { todo: string; id: string; userName: string }[]
+    { todo: string; id: string; userName: string; completed: boolean }[]
   >(() => {
     const storedTodo = localStorage.getItem("todo-items");
     return storedTodo ? JSON.parse(storedTodo) : [];
@@ -27,6 +27,12 @@ const TodoListPage: React.FC = () => {
 
   const handleUpdateEdit = (todoId: string) => {
     setSelectedId(todoId);
+  };
+
+  const handleTodoCompletion = (index: number) => {
+    const updatedTodoItems = [...todoItems];
+    updatedTodoItems[index].completed = !updatedTodoItems[index].completed;
+    setTodoItem(updatedTodoItems);
   };
 
   return (
@@ -52,6 +58,7 @@ const TodoListPage: React.FC = () => {
           handleUpdateDelete={handleUpdateDelete}
           currentId={currentId}
           handleUpdateEdit={handleUpdateEdit}
+          handleTodoCompletion={handleTodoCompletion}
         />
       </Box>
     </React.Fragment>

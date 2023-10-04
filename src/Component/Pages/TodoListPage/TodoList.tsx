@@ -10,6 +10,7 @@ import {
   TableCell,
   Modal,
   Button,
+  Checkbox,
 } from "@mui/material";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -17,16 +18,23 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined
 import React, { useEffect, useState } from "react";
 
 interface ITodoList {
-  todoItems: { todo: string; id: string; userName: string }[];
+  todoItems: {
+    todo: string;
+    id: string;
+    userName: string;
+    completed: boolean;
+  }[];
   handleUpdateDelete: (id: string) => void;
   currentId: string;
   handleUpdateEdit: (id: string) => void;
+  handleTodoCompletion: (index: number) => void;
 }
 
 const TodoList: React.FC<ITodoList> = ({
   todoItems,
   handleUpdateDelete,
   handleUpdateEdit,
+  handleTodoCompletion,
 }) => {
   const [openModals, setOpenModals] = useState<boolean[]>(
     new Array(todoItems.length).fill(false)
@@ -66,6 +74,7 @@ const TodoList: React.FC<ITodoList> = ({
                       backgroundColor: "lightblue",
                     }}
                   >
+                    <TableCell align="center">Completed</TableCell>
                     <TableCell align="center">Unique UUId</TableCell>
                     <TableCell align="center">Name</TableCell>
                     <TableCell align="center">Todo Task</TableCell>
@@ -79,10 +88,17 @@ const TodoList: React.FC<ITodoList> = ({
                         todo: string;
                         id: string;
                         userName: string;
+                        completed: boolean;
                       },
                       index: number
                     ) => (
                       <TableRow key={inputValue.id}>
+                        <TableCell align="center">
+                          <Checkbox
+                            checked={inputValue.completed}
+                            onChange={() => handleTodoCompletion(index)}
+                          />
+                        </TableCell>
                         <TableCell align="center">{inputValue.id}</TableCell>
                         <TableCell align="center">
                           {inputValue.userName}

@@ -17,10 +17,16 @@ interface ITodoForm {
     userName: string;
     todo: string;
     id: string;
+    completed: boolean;
   }[];
 
   handleUpdateTodoItems: (
-    inputValue: { todo: string; id: string; userName: string }[]
+    inputValue: {
+      todo: string;
+      id: string;
+      userName: string;
+      completed: boolean;
+    }[]
   ) => void;
 
   handleUpdateId: (currentId: string) => void;
@@ -73,7 +79,12 @@ const TodoForm: React.FC<ITodoForm> = ({
     if (selectedId !== null) {
       const updateTodoItems = todoItems.map((item) =>
         item.id === selectedId
-          ? { ...item, todo: data.todo, userName: data.userName }
+          ? {
+              ...item,
+              todo: data.todo,
+              userName: data.userName,
+              completed: data.completed,
+            }
           : item
       );
       handleUpdateTodoItems(updateTodoItems);
@@ -85,6 +96,7 @@ const TodoForm: React.FC<ITodoForm> = ({
         todo: data.todo,
         id: currentId,
         userName: data.userName,
+        completed: false,
       };
       handleUpdateTodoItems([...todoItems, newTodoItem]);
       handleUpdateId(uuidv4());
@@ -94,9 +106,15 @@ const TodoForm: React.FC<ITodoForm> = ({
   return (
     <React.Fragment>
       <Paper elevation={3}>
-        <Box sx={{ display: "-webkit-inline-flex", alignItems: "center" }}>
+        <Box
+          sx={{
+            display: "-webkit-inline-flex",
+            alignItems: "center",
+          }}
+          mt={2}
+        >
           <CreateTwoToneIcon sx={{ width: 20 }} />
-          <Typography variant="h6" component="h2" mt={2}>
+          <Typography variant="h6" component="h2">
             Your Todo Form
           </Typography>
         </Box>
