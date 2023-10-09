@@ -12,6 +12,7 @@ const LazyGallery = React.lazy(
 const LazyImageDetails = React.lazy(
   () => import("./Component/Pages/GalleryPage/Gallery/ImageDetails")
 );
+const LazyAlbum = React.lazy(() => import("./Component/Pages/AlbumPage/Album"));
 
 function App() {
   return (
@@ -35,6 +36,15 @@ function App() {
             </React.Suspense>
           }
         />
+        <Route
+          path="/album"
+          element={
+            <React.Suspense fallback="Loading...">
+              <LazyAlbum />
+            </React.Suspense>
+          }
+        />
+
         <Route path="/about" element={<About />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
