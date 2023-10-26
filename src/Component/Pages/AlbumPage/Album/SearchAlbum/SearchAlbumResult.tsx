@@ -16,17 +16,19 @@ import { AxiosInstance } from "axios";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 interface ISearchAlbumResult {
-  selectedAlbums: IAlbum[] | null;
+  searchedAlbums: IAlbum[] | null;
   jsonplaceholderAPI: AxiosInstance;
-  handleEditAlbum: (data: IAlbum[] | null) => void;
+  handleEditAlbum: (data: IAlbum | null) => void;
   handleReset: (data: boolean) => void;
+  handleDeleteSelectedAlbum: (deletedAlbum: IAlbum) => void;
 }
 
 const SearchAlbumResult: React.FC<ISearchAlbumResult> = ({
-  selectedAlbums,
+  searchedAlbums,
   jsonplaceholderAPI,
   handleEditAlbum,
   handleReset,
+  handleDeleteSelectedAlbum,
 }) => {
   return (
     <Paper elevation={3}>
@@ -34,7 +36,11 @@ const SearchAlbumResult: React.FC<ISearchAlbumResult> = ({
         <Typography variant="h6" component="h2" mt={2} align="center">
           Your Requested Album
         </Typography>
-        {selectedAlbums ? (
+        {searchedAlbums === null || searchedAlbums.length === 0 ? (
+          <Typography variant="body1" align="center">
+            Nothing here yet.
+          </Typography>
+        ) : (
           <TableContainer component={Paper}>
             <Table sx={{ border: "solid", borderColor: "lightblue" }}>
               <TableHead>
@@ -50,7 +56,7 @@ const SearchAlbumResult: React.FC<ISearchAlbumResult> = ({
               </TableHead>
 
               <TableBody>
-                {selectedAlbums.map(
+                {searchedAlbums.map(
                   (selectedAlbum: { id: number; title: string }) => (
                     <TableRow key={selectedAlbum.id}>
                       <TableCell align="center">{selectedAlbum.id}</TableCell>
@@ -60,7 +66,7 @@ const SearchAlbumResult: React.FC<ISearchAlbumResult> = ({
                       <TableCell align="center">
                         <EditOutlinedIcon
                           onClick={() => {
-                            handleEditAlbum(selectedAlbums);
+                            handleEditAlbum(selectedAlbum);
                             handleReset(false);
                           }}
                         />
@@ -69,7 +75,7 @@ const SearchAlbumResult: React.FC<ISearchAlbumResult> = ({
                           selectedAlbums={[selectedAlbum]}
                           selectedAlbumsId={selectedAlbum.id}
                           jsonplaceholderAPI={jsonplaceholderAPI}
-                          handleSelectedAlbum={handleEditAlbum}
+                          handleDeleteSelectedAlbum={handleDeleteSelectedAlbum}
                         />
                       </TableCell>
                     </TableRow>
@@ -78,10 +84,6 @@ const SearchAlbumResult: React.FC<ISearchAlbumResult> = ({
               </TableBody>
             </Table>
           </TableContainer>
-        ) : (
-          <Typography variant="body1" align="center">
-            No album
-          </Typography>
         )}
       </Box>
     </Paper>

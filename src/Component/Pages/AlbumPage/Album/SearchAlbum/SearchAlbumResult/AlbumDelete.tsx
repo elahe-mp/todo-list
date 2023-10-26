@@ -8,7 +8,7 @@ import { AxiosInstance } from "axios";
 interface IAlbumDelete {
   selectedAlbums: IAlbum[] | null;
   jsonplaceholderAPI: AxiosInstance;
-  handleSelectedAlbum: (data: IAlbum[] | null) => void;
+  handleDeleteSelectedAlbum: (data: IAlbum) => void;
   selectedAlbumsId: number;
 }
 
@@ -16,21 +16,25 @@ const AlbumDelete: React.FC<IAlbumDelete> = ({
   selectedAlbumsId,
   selectedAlbums,
   jsonplaceholderAPI,
-  handleSelectedAlbum,
+  handleDeleteSelectedAlbum,
 }) => {
   const [openModal, setOpenModal] = useState(false);
-
-  if (selectedAlbums !== null) {
-    console.log("the selected album is", selectedAlbums);
-  }
 
   //How to be sure that this works as the API does not allow to really delete the record?
   const handleDeleteClick = (id: number) => {
     if (selectedAlbums) {
-      jsonplaceholderAPI.delete("/albums/`${id}`").then(() => {
-        console.log("selected.id is deleted:", selectedAlbums);
-        handleSelectedAlbum(null);
-      });
+      jsonplaceholderAPI
+        .delete(`/albums/${id}`)
+        .then(() => {
+          console.log("selected.id is deleted:", selectedAlbums);
+          const deletedAlbum = selectedAlbums.find((album) => album.id === id);
+          if (deletedAlbum) {
+            handleDeleteSelectedAlbum(deletedAlbum);
+          }
+        })
+        .catch((error) => {
+          console.error("Error while deleting album:", error);
+        });
     }
   };
 

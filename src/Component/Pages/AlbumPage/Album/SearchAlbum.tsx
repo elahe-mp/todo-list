@@ -19,60 +19,74 @@ const SearchAlbum: React.FC<ISearchAlbum> = ({
     getValues,
     setValue,
     reset,
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isDirty },
   } = useForm<IAlbum>();
 
-  const [selectedAlbum, setSelectedAlbum] = useState<IAlbum[] | null>(null);
   const [shouldReset, setShouldReset] = useState(false);
+  const [searchResults, setSearchResults] = useState<IAlbum[]>([]);
+  const [editingAlbum, setEditingAlbum] = useState<IAlbum | null>(null);
 
   useEffect(() => {
-    if (selectedAlbum !== null) {
-      setValue("title", selectedAlbum[0].title); // here needs attention
+    if (editingAlbum !== null) {
+      setValue("title", editingAlbum.title);
     }
     if (shouldReset) {
       reset();
     }
-  }, [setValue, selectedAlbum, reset, shouldReset]); // need sth to put here in the if so that when the edit button is pushed the data be shown in the form and when the  search or save button is pushed it resets.
+  }, [setValue, editingAlbum, reset, shouldReset]);
 
   const handleSearchClick = async (title: string) => {
-    //Is using async a better approach?->search on it
-    //How to improve the search process? Now it just finds the first exact field-> search on it
-
     //edit/send data phase:
-    if (selectedAlbum != null && selectedAlbum.length > 0) {
-      try {
-        await jsonplaceholderAPI.put(`/albums/${selectedAlbum[0].id}`, {
-          // here needs attention
+    // if (searchResults != null && searchResults.length > 0) {
+    try {
+      if (editingAlbum) {
+        await jsonplaceholderAPI.put(`/albums/${editingAlbum?.id}`, {
           title: title,
-        }); // here there is another error
-        console.log("Album edited successfully");
-        setSelectedAlbum(null);
-      } catch (error: any) {
-        console.log("Error while editing album:", error);
-      }
-      setShouldReset(true);
-      alert("The album was successfully registered!");
-    } else {
-      //search phase:
-      try {
-        const response = await jsonplaceholderAPI.get("/albums", {
-          params: {
-            title: title,
-          },
         });
-        console.log("responce.data is", response.data);
-        if (Array.isArray(response.data) && response.data.length > 0) {
-          setSelectedAlbum(response.data);
-          setShouldReset(true);
+        console.log(
+          "Album edited successfully with id of:",
+          editingAlbum?.id,
+          ", and title of:",
+          editingAlbum?.title
+        );
+        // setEditingAlbum(null);
+        //update the searchReasult
+        const updatedSearchResults = searchResults.map((album) =>
+          album.id === editingAlbum?.id
+            ? {
+                ...album,
+                title: title,
+              }
+            : album
+        );
+        setSearchResults(updatedSearchResults);
+        setEditingAlbum(null); //turn off edit mode
+      } else {
+        //search phase:
+        const response = await jsonplaceholderAPI.get("/albums");
+        const filteredAlbums = response.data.filter((album: IAlbum) =>
+          album.title.includes(title)
+        );
+        console.log("responce.data is", filteredAlbums);
+        if (filteredAlbums.length > 0) {
+          setSearchResults(filteredAlbums);
         } else {
-          setSelectedAlbum(null);
-          setShouldReset(true);
+          setSearchResults([]);
         }
-      } catch (error: any) {
-        console.log("Error while searching for albums:", error);
-        handleSearchAlbumError(error);
       }
       setShouldReset(true);
+    } catch (error: any) {
+      console.error("Error while editin or searching for album:", error);
+      setShouldReset(true);
+      handleSearchAlbumError(error);
+    }
+  };
+
+  const handleDeleteSelectedAlbum = (deletedAlbum: IAlbum | null) => {
+    if (deletedAlbum) {
+      setSearchResults((prevResults) =>
+        prevResults.filter((album) => album.id !== deletedAlbum.id)
+      );
     }
   };
 
@@ -105,26 +119,23 @@ const SearchAlbum: React.FC<ISearchAlbum> = ({
               variant="contained"
               size="large"
               type="button"
-              disabled={!isDirty || isSubmitting}
+              disabled={!isDirty}
               onClick={() => {
                 handleSearchClick(getValues("title"));
               }}
             >
-              {isSubmitting
-                ? "In process"
-                : selectedAlbum != null && selectedAlbum.length > 0
-                ? "Edit The Album "
-                : "Search The Album"}
+              {editingAlbum != null ? "Edit The Album " : "Search The Album"}
             </Button>
           </Stack>
         </form>
       </Stack>
-      {/* {selectedAlbum !== null && ( */}
+
       <SearchAlbumResult
-        selectedAlbums={selectedAlbum}
+        searchedAlbums={searchResults}
         jsonplaceholderAPI={jsonplaceholderAPI}
-        handleEditAlbum={setSelectedAlbum}
+        handleEditAlbum={setEditingAlbum}
         handleReset={setShouldReset}
+        handleDeleteSelectedAlbum={handleDeleteSelectedAlbum}
       />
     </>
   );

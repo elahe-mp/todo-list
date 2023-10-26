@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Stack, TextField } from "@mui/material";
+import { Button, Stack, TextField, Typography } from "@mui/material";
 import { AxiosInstance } from "axios";
 import { Controller, useForm } from "react-hook-form";
 import IAlbum from "../IAbum";
@@ -21,16 +21,16 @@ const PostAlbum: React.FC<IPostAlbum> = ({
   } = useForm<IAlbum>();
 
   useEffect(() => {
-    if (isSubmitSuccessful) {
+    if (isSubmitting) {
       reset();
     }
-  }, [isSubmitSuccessful, reset]);
+  }, [isSubmitting, reset]);
 
   const onSubmit = (data: IAlbum) => {
     console.log(data);
     jsonplaceholderAPI
       .post("/albums", data)
-      .then((res) => console.log(res, isSubmitSuccessful))
+      .then((res) => console.log(res))
       .catch((error) => handlePostAlbumError(error));
   };
 
@@ -69,6 +69,11 @@ const PostAlbum: React.FC<IPostAlbum> = ({
             </Button>
           </Stack>
         </form>
+        {isSubmitSuccessful && (
+          <Typography variant="body1" align="center">
+            Your album was succussfully registered
+          </Typography>
+        )}
       </Stack>
     </>
   );
