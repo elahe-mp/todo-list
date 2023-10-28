@@ -15,15 +15,17 @@ import {
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
+
+interface ITODOItem {
+  todo: string;
+  id: string;
+  userName: string;
+  completed: boolean;
+}
 
 interface ITodoList {
-  todoItems: {
-    todo: string;
-    id: string;
-    userName: string;
-    completed: boolean;
-  }[];
+  todoItems: ITODOItem[];
   handleUpdateDelete: (id: string) => void;
   currentId: string;
   handleUpdateEdit: (id: string) => void;
@@ -36,26 +38,12 @@ const TodoList: React.FC<ITodoList> = ({
   handleUpdateEdit,
   handleTodoCompletion,
 }) => {
-  const [openModals, setOpenModals] = useState<boolean[]>(
-    new Array(todoItems.length).fill(false)
+  const [deletedTodo, setDeletedTodo] = useState<ITODOItem | undefined>(
+    undefined
   );
 
-  const openModal = (index: number) => {
-    const newOpenModals = [...openModals];
-    newOpenModals[index] = true;
-    setOpenModals(newOpenModals);
-  };
-  const closeModal = (index: number) => {
-    const newOpenModals = [...openModals];
-    newOpenModals[index] = false;
-    setOpenModals(newOpenModals);
-  };
-
-  useEffect(() => {
-    if (todoItems.length !== openModals.length) {
-      setOpenModals(new Array(todoItems.length).fill(false));
-    }
-  }, [todoItems, openModals.length]);
+  const openModal = useMemo(() => !!deletedTodo, [deletedTodo]);
+  const closeModal = () => setDeletedTodo(undefined);
 
   return (
     <React.Fragment>
@@ -82,81 +70,66 @@ const TodoList: React.FC<ITodoList> = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {todoItems.map(
-                    (
-                      inputValue: {
-                        todo: string;
-                        id: string;
-                        userName: string;
-                        completed: boolean;
-                      },
-                      index: number
-                    ) => (
-                      <TableRow key={inputValue.id}>
-                        <TableCell align="center">
-                          <Checkbox
-                            checked={inputValue.completed}
-                            onChange={() => handleTodoCompletion(index)}
-                          />
-                        </TableCell>
-                        <TableCell align="center">{inputValue.id}</TableCell>
-                        <TableCell align="center">
-                          {inputValue.userName}
-                        </TableCell>
-                        <TableCell align="center">{inputValue.todo}</TableCell>
-                        <TableCell align="center">
-                          <EditOutlinedIcon
-                            onClick={() => handleUpdateEdit(inputValue.id)}
-                          />
+                  {todoItems.map((todo, index) => (
+                    <TableRow key={todo.id}>
+                      <TableCell align="center">
+                        <Checkbox
+                          checked={todo.completed}
+                          onChange={() => handleTodoCompletion(index)}
+                        />
+                      </TableCell>
+                      <TableCell align="center">{todo.id}</TableCell>
+                      <TableCell align="center">{todo.userName}</TableCell>
+                      <TableCell align="center">{todo.todo}</TableCell>
+                      <TableCell align="center">
+                        <EditOutlinedIcon
+                          onClick={() => handleUpdateEdit(todo.id)}
+                        />
 
-                          <DeleteForeverOutlinedIcon
-                            onClick={() => openModal(index)}
-                          />
-                          <Modal
-                            open={openModals[index] ?? false}
-                            onClose={() => closeModal(index)}
-                          >
-                            <Box
-                              sx={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                width: 300,
-                                bgcolor: "ButtonFace",
-                                boxShadow: 15,
-                                p: 3.5,
-                                textAlign: "center",
-                              }}
-                            >
-                              <Typography marginBottom={2} variant="subtitle2">
-                                Are you sure you want to delete the task?
-                              </Typography>
-                              <Box sx={{ textAlign: "center" }}>
-                                <Button
-                                  color="warning"
-                                  sx={{ textAlign: "center" }}
-                                  variant="contained"
-                                  onClick={() => {
-                                    handleUpdateDelete(inputValue.id);
-                                    closeModal(index);
-                                  }}
-                                >
-                                  Yes delete it
-                                </Button>
-                              </Box>
-                            </Box>
-                          </Modal>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  )}
+                        <DeleteForeverOutlinedIcon
+                          onClick={() => setDeletedTodo(todo)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
           </Box>
         </Paper>
       )}
+      <Modal open={openModal} onClose={closeModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 300,
+            bgcolor: "ButtonFace",
+            boxShadow: 15,
+            p: 3.5,
+            textAlign: "center",
+          }}
+        >
+          <Typography marginBottom={2} variant="subtitle2">
+            Are you sure you want to delete the task?
+          </Typography>
+          <Box sx={{ textAlign: "center" }}>
+            <Button
+              color="warning"
+              sx={{ textAlign: "center" }}
+              variant="contained"
+              onClick={() => {
+                handleUpdateDelete(deletedTodo?.id ?? "");
+                closeModal();
+              }}
+            >
+              Yes delete it
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </React.Fragment>
   );
 };
