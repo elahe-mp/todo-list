@@ -67,30 +67,22 @@ const Album: React.FC = () => {
           See all the albums
         </Button>
       </Stack>
-
-      {action === "add" && (
-        <PostAlbum
-          handlePostAlbumError={setError}
-          jsonplaceholderAPI={jsonplaceholderAPI}
-        />
-      )}
-
-      {action === "search" && (
-        <SearchAlbum
-          jsonplaceholderAPI={jsonplaceholderAPI}
-          handleSearchAlbumError={setError}
-        />
-      )}
-      {action === "seeAlbums" && (
-        <GetAlbum
-          jsonplaceholderAPI={jsonplaceholderAPI}
-          handleGetAlbum={setAlbums}
-          handleGetAlbumError={setError}
-          albums={albums}
-        />
-      )}
+      {action &&
+        layoutData({
+          handlePostAlbumError: setError,
+          jsonplaceholderAPI: jsonplaceholderAPI,
+          handleGetAlbumError: setError,
+          albums,
+          handleGetAlbum: setAlbums,
+        })[action]}
     </>
   );
 };
 
 export default Album;
+
+const layoutData = (props: any) => ({
+  add: <PostAlbum {...props} />,
+  search: <SearchAlbum {...props} />,
+  seeAlbums: <GetAlbum {...props} />,
+});
