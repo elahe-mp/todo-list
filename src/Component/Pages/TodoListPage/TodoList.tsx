@@ -63,7 +63,7 @@ const TodoList: React.FC<ITodoList> = ({
                     }}
                   >
                     <TableCell align="center">Completed</TableCell>
-                    <TableCell align="center">Unique UUId</TableCell>
+                    <TableCell align="center">Id</TableCell>
                     <TableCell align="center">Name</TableCell>
                     <TableCell align="center">Todo Task</TableCell>
                     <TableCell align="center">Actions</TableCell>
@@ -71,14 +71,14 @@ const TodoList: React.FC<ITodoList> = ({
                 </TableHead>
                 <TableBody>
                   {todoItems.map((todo, index) => (
-                    <TableRow key={todo.id}>
+                    <TableRow key={`TodoList_todo_${todo.id}`}>
                       <TableCell align="center">
                         <Checkbox
                           checked={todo.completed}
                           onChange={() => handleTodoCompletion(index)}
                         />
                       </TableCell>
-                      <TableCell align="center">{todo.id}</TableCell>
+                      <TableCell align="center">{index}</TableCell>
                       <TableCell align="center">{todo.userName}</TableCell>
                       <TableCell align="center">{todo.todo}</TableCell>
                       <TableCell align="center">

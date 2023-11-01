@@ -1,26 +1,39 @@
-import * as React from "react";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import { useMemo } from "react";
 
-interface IPagination {
+interface IPaginationRounded {
   postsPerPage: number;
   totalPosts: number;
-  handleUpdatePage: (inputValue: number) => void;
+  handleUpdatePage: (pageNo: number) => void;
+  pageNo: number;
 }
 
-const PaginationRounded: React.FC<IPagination> = ({
+const PaginationRounded: React.FC<IPaginationRounded> = ({
   postsPerPage,
   totalPosts,
   handleUpdatePage,
+  pageNo,
 }) => {
-  const handleChange = (e: React.ChangeEvent<unknown>, inputValue: number) => {
-    handleUpdatePage(inputValue);
+  //useMemo helps recalculating the data only when its dependency changes, prevents unnecessary computation on each render
+  const totalPageCount = useMemo(
+    () => Math.ceil(totalPosts / postsPerPage),
+    [totalPosts, postsPerPage]
+  );
+
+  const handleChange = (
+    e: React.ChangeEvent<unknown>,
+    currentPageNo: number
+  ) => {
+    handleUpdatePage(currentPageNo);
+    console.log("page no:", currentPageNo);
   };
 
   return (
     <Stack spacing={2} sx={{ marginBottom: 3, alignItems: "center" }}>
       <Pagination
-        count={Math.ceil(totalPosts / postsPerPage)}
+        count={totalPageCount}
+        page={pageNo}
         variant="outlined"
         shape="rounded"
         onChange={handleChange}

@@ -8,17 +8,22 @@ interface IPost {
   title: string;
   body: string;
 }
+//the followig constants are fixed and won't be re-initialized on each component render
+const startIndexInEachPage = 0;
+const postsPerPage = 10;
+const totalPosts = 100; // The mentioned api has 100 records of data
 
 const PaginatedPosts: React.FC = () => {
   const [posts, setPosts] = useState<IPost[]>([]);
-  const [currentPageNo, setCurrentPageNo] = useState(1);
-  const postsPerPage = 10;
   const [loadingData, setLoadingData] = useState(false);
   const [error, setError] = useState<null | string>(null);
+  const [page, setPage] = useState(1); // manage the active page state
 
-  useEffect(() => {
+  const getPostsForEachPage = (startNo: number, postsPerPage: number) => {
     setLoadingData(true);
-    fetch("https://jsonplaceholder.typicode.com/posts")
+    fetch(
+      `https://jsonplaceholder.typicode.com/posts?_start=${startNo}&_limit=${postsPerPage}`
+    )
       .then((res) => {
         if (!res.ok) {
           throw new Error("Network Response was not ok");
@@ -34,15 +39,17 @@ const PaginatedPosts: React.FC = () => {
         setError(error.message); //capture and store the error message
         console.log(error.message);
       });
-  }, []);
-
-  const handleUpdatePage = (inputValue: number) => {
-    setCurrentPageNo(inputValue);
   };
-  //Get current posts
-  const indexOfLastPost = currentPageNo * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+  useEffect(() => {
+    getPostsForEachPage(startIndexInEachPage, postsPerPage);
+  }, []); //  Dependency array is empty to run once on initial load
+
+  const handleUpdatePage = (pageNumber: number) => {
+    const startNo = (pageNumber - 1) * postsPerPage;
+    getPostsForEachPage(startNo, postsPerPage);
+    setPage(pageNumber);
+  };
 
   return (
     <div>
@@ -52,12 +59,13 @@ const PaginatedPosts: React.FC = () => {
         <div>Error: {error}</div>
       ) : (
         <>
-          <Post currentPosts={currentPosts} />
+          <Post currentPosts={posts} />
           <PaginationRounded
             postsPerPage={postsPerPage}
-            totalPosts={posts.length}
+            totalPosts={totalPosts}
             handleUpdatePage={handleUpdatePage}
-          />{" "}
+            pageNo={page}
+          />
         </>
       )}
     </div>
