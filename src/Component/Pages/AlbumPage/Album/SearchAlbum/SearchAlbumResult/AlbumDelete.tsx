@@ -1,5 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Box, Button, Modal, Typography } from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import IAlbum from "../../../IAbum";
@@ -18,18 +18,21 @@ const AlbumDelete: React.FC<IAlbumDelete> = ({
   jsonplaceholderAPI,
   handleDeleteSelectedAlbum,
 }) => {
-  const [openModal, setOpenModal] = useState(false);
+  const [deletedAlbum, setDeletedAlbum] = useState<IAlbum[] | null>(null);
+  const openModal = useMemo(() => !!deletedAlbum, [deletedAlbum]); // when there is a value in the deletedAlbum, !! shows "true" and makes openModal true which opens the modal
+  const closeModal = () => setDeletedAlbum(null);
 
-  //How to be sure that this works as the API does not allow to really delete the record?
   const handleDeleteClick = (id: number) => {
     if (selectedAlbums) {
       jsonplaceholderAPI
         .delete(`/albums/${id}`)
         .then(() => {
           console.log("selected.id is deleted:", selectedAlbums);
-          const deletedAlbum = selectedAlbums.find((album) => album.id === id);
-          if (deletedAlbum) {
-            handleDeleteSelectedAlbum(deletedAlbum);
+          const updateDeletedAlbum = selectedAlbums.find(
+            (album) => album.id === id
+          );
+          if (updateDeletedAlbum) {
+            handleDeleteSelectedAlbum(updateDeletedAlbum);
           }
         })
         .catch((error) => {
@@ -40,8 +43,11 @@ const AlbumDelete: React.FC<IAlbumDelete> = ({
 
   return (
     <>
-      <DeleteForeverOutlinedIcon onClick={() => setOpenModal(true)} />
-      <Modal open={openModal} onClose={() => setOpenModal(false)}>
+      <DeleteForeverOutlinedIcon
+        onClick={() => setDeletedAlbum(selectedAlbums)}
+      />
+      {/* Modal should be called when it is needed to delete a record */}
+      <Modal open={openModal} onClose={closeModal}>
         <Box
           sx={{
             position: "absolute",
@@ -65,7 +71,7 @@ const AlbumDelete: React.FC<IAlbumDelete> = ({
               variant="contained"
               onClick={() => {
                 handleDeleteClick(selectedAlbumsId);
-                setOpenModal(false);
+                closeModal();
               }}
             >
               Yes delete it

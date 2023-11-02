@@ -36,8 +36,7 @@ const SearchAlbum: React.FC<ISearchAlbum> = ({
   }, [setValue, editingAlbum, reset, shouldReset]);
 
   const handleSearchClick = async (title: string) => {
-    //edit/send data phase:
-    // if (searchResults != null && searchResults.length > 0) {
+    //edit & send data phase:
     try {
       if (editingAlbum) {
         await jsonplaceholderAPI.put(`/albums/${editingAlbum?.id}`, {
@@ -49,7 +48,6 @@ const SearchAlbum: React.FC<ISearchAlbum> = ({
           ", and title of:",
           editingAlbum?.title
         );
-        // setEditingAlbum(null);
         //update the searchReasult
         const updatedSearchResults = searchResults.map((album) =>
           album.id === editingAlbum?.id
