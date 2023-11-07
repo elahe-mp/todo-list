@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Button, Stack, TextField } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
 import IAlbum from "../IAbum";
 import { AxiosInstance } from "axios";
 import SearchAlbumResult from "./SearchAlbum/SearchAlbumResult";
@@ -14,26 +13,18 @@ const SearchAlbum: React.FC<ISearchAlbum> = ({
   handleSearchAlbumError,
   jsonplaceholderAPI,
 }) => {
-  const {
-    control,
-    getValues,
-    setValue,
-    reset,
-    formState: { errors, isDirty },
-  } = useForm<IAlbum>();
-
   const [shouldReset, setShouldReset] = useState(false);
   const [searchResults, setSearchResults] = useState<IAlbum[]>([]);
   const [editingAlbum, setEditingAlbum] = useState<IAlbum | null>(null);
-
+  const [title, setTitle] = useState("");
   useEffect(() => {
     if (editingAlbum !== null) {
-      setValue("title", editingAlbum.title);
+      setTitle(editingAlbum.title);
     }
     if (shouldReset) {
-      reset();
+      setTitle("");
     }
-  }, [setValue, editingAlbum, reset, shouldReset]);
+  }, [editingAlbum, shouldReset]);
 
   const handleSearchClick = async (title: string) => {
     //edit & send data phase:
@@ -71,6 +62,7 @@ const SearchAlbum: React.FC<ISearchAlbum> = ({
         } else {
           setSearchResults([]);
         }
+        // setTitle("");
       }
       setShouldReset(true);
     } catch (error: any) {
@@ -82,55 +74,51 @@ const SearchAlbum: React.FC<ISearchAlbum> = ({
 
   const handleDeleteSelectedAlbum = (deletedAlbum: IAlbum | null) => {
     if (deletedAlbum) {
-      setSearchResults((prevResults) =>
-        prevResults.filter((album) => album.id !== deletedAlbum.id)
-      );
+      jsonplaceholderAPI
+        .delete(`/albums/${deletedAlbum?.id}`)
+        .then(() => {
+          console.log("selected.id is deleted:", deletedAlbum?.id);
+          setSearchResults((prevResults) =>
+            prevResults.filter((album) => album.id !== deletedAlbum.id)
+          );
+        })
+        .catch((error) => {
+          console.error("Error while deleting album:", error);
+        });
     }
   };
 
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+  };
   return (
     <>
       <Stack spacing={4} margin={2} padding={1} textAlign={"center"}>
-        <form>
-          <Stack marginBottom={2} alignItems={"center"}>
-            <Controller
-              name="title"
-              control={control}
-              defaultValue=""
-              rules={{
-                required: { value: true, message: "This field is required" },
-              }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  helperText={errors ? errors.title?.message : null}
-                  error={!!errors.title}
-                  label="Album"
-                  placeholder="Album's name or part of it"
-                />
-              )}
-            />
-          </Stack>
+        <Stack marginBottom={2} alignItems={"center"}>
+          <TextField
+            value={title}
+            onChange={handleTitleChange}
+            label="Album"
+            placeholder="Album's name or part of it"
+          />
+        </Stack>
 
-          <Stack display="block" margin={2}>
-            <Button
-              variant="contained"
-              size="large"
-              type="button"
-              disabled={!isDirty}
-              onClick={() => {
-                handleSearchClick(getValues("title"));
-              }}
-            >
-              {editingAlbum != null ? "Edit The Album " : "Search The Album"}
-            </Button>
-          </Stack>
-        </form>
+        <Stack display="block" margin={2}>
+          <Button
+            variant="contained"
+            size="large"
+            type="button"
+            onClick={() => {
+              handleSearchClick(title);
+            }}
+          >
+            {editingAlbum != null ? "Edit The Album " : "Search The Album"}
+          </Button>
+        </Stack>
       </Stack>
 
       <SearchAlbumResult
         searchedAlbums={searchResults}
-        jsonplaceholderAPI={jsonplaceholderAPI}
         handleEditAlbum={setEditingAlbum}
         handleReset={setShouldReset}
         handleDeleteSelectedAlbum={handleDeleteSelectedAlbum}

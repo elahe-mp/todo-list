@@ -1,22 +1,18 @@
-/* eslint-disable no-template-curly-in-string */
 import React, { useMemo, useState } from "react";
 import { Box, Button, Modal, Typography } from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import IAlbum from "../../../IAbum";
-import { AxiosInstance } from "axios";
 
 interface IAlbumDelete {
   selectedAlbums: IAlbum[] | null;
-  jsonplaceholderAPI: AxiosInstance;
-  handleDeleteSelectedAlbum: (data: IAlbum) => void;
+  handleDeleteSelectedAlbum: (data: IAlbum) => void; //*
   selectedAlbumsId: number;
 }
 
 const AlbumDelete: React.FC<IAlbumDelete> = ({
   selectedAlbumsId,
   selectedAlbums,
-  jsonplaceholderAPI,
-  handleDeleteSelectedAlbum,
+  handleDeleteSelectedAlbum, //*
 }) => {
   const [deletedAlbum, setDeletedAlbum] = useState<IAlbum[] | null>(null);
   const openModal = useMemo(() => !!deletedAlbum, [deletedAlbum]); // when there is a value in the deletedAlbum, !! shows "true" and makes openModal true which opens the modal
@@ -24,20 +20,10 @@ const AlbumDelete: React.FC<IAlbumDelete> = ({
 
   const handleDeleteClick = (id: number) => {
     if (selectedAlbums) {
-      jsonplaceholderAPI
-        .delete(`/albums/${id}`)
-        .then(() => {
-          console.log("selected.id is deleted:", selectedAlbums);
-          const updateDeletedAlbum = selectedAlbums.find(
-            (album) => album.id === id
-          );
-          if (updateDeletedAlbum) {
-            handleDeleteSelectedAlbum(updateDeletedAlbum);
-          }
-        })
-        .catch((error) => {
-          console.error("Error while deleting album:", error);
-        });
+      const albumToDelete = selectedAlbums.find((album) => album.id === id);
+      if (albumToDelete) {
+        handleDeleteSelectedAlbum(albumToDelete);
+      }
     }
   };
 

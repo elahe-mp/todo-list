@@ -12,12 +12,10 @@ import {
 } from "@mui/material";
 import AlbumDelete from "./SearchAlbumResult/AlbumDelete";
 import IAlbum from "../../IAbum";
-import { AxiosInstance } from "axios";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 interface ISearchAlbumResult {
   searchedAlbums: IAlbum[] | null;
-  jsonplaceholderAPI: AxiosInstance;
   handleEditAlbum: (data: IAlbum | null) => void;
   handleReset: (data: boolean) => void;
   handleDeleteSelectedAlbum: (deletedAlbum: IAlbum) => void;
@@ -25,10 +23,9 @@ interface ISearchAlbumResult {
 
 const SearchAlbumResult: React.FC<ISearchAlbumResult> = ({
   searchedAlbums,
-  jsonplaceholderAPI,
   handleEditAlbum,
   handleReset,
-  handleDeleteSelectedAlbum,
+  handleDeleteSelectedAlbum, //*
 }) => {
   return (
     <Paper elevation={3}>
@@ -74,7 +71,6 @@ const SearchAlbumResult: React.FC<ISearchAlbumResult> = ({
                         <AlbumDelete
                           selectedAlbums={[selectedAlbum]}
                           selectedAlbumsId={selectedAlbum.id}
-                          jsonplaceholderAPI={jsonplaceholderAPI}
                           handleDeleteSelectedAlbum={handleDeleteSelectedAlbum}
                         />
                       </TableCell>
