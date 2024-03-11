@@ -26,7 +26,6 @@ const PaginationRounded: React.FC<IPaginationRounded> = ({
     currentPageNo: number
   ) => {
     handleUpdatePage(currentPageNo);
-    console.log("page no:", currentPageNo);
   };
 
   return (
