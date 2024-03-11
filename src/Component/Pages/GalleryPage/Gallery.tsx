@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 
 const Gallery: React.FC = () => {
   return (
-    <>
+    <React.Fragment>
       <Container sx={{ width: 900 }}>
         <Typography variant="h3" component="h1" align="center">
           Photo Gallery
@@ -13,7 +13,7 @@ const Gallery: React.FC = () => {
         <Images />
         <Outlet />
       </Container>
-    </>
+    </React.Fragment>
   );
 };
 
