@@ -27,7 +27,6 @@ const PostAlbum: React.FC<IPostAlbum> = ({
   }, [isSubmitting, reset]);
 
   const onSubmit = (data: IAlbum) => {
-    console.log(data);
     jsonplaceholderAPI
       .post("/albums", data)
       .then((res) => console.log(res))

@@ -33,12 +33,6 @@ const SearchAlbum: React.FC<ISearchAlbum> = ({
         await jsonplaceholderAPI.put(`/albums/${editingAlbum?.id}`, {
           title: title,
         });
-        console.log(
-          "Album edited successfully with id of:",
-          editingAlbum?.id,
-          ", and title of:",
-          editingAlbum?.title
-        );
         //update the searchReasult
         const updatedSearchResults = searchResults.map((album) =>
           album.id === editingAlbum?.id
@@ -56,7 +50,6 @@ const SearchAlbum: React.FC<ISearchAlbum> = ({
         const filteredAlbums = response.data.filter((album: IAlbum) =>
           album.title.includes(title)
         );
-        console.log("responce.data is", filteredAlbums);
         if (filteredAlbums.length > 0) {
           setSearchResults(filteredAlbums);
         } else {
@@ -77,13 +70,13 @@ const SearchAlbum: React.FC<ISearchAlbum> = ({
       jsonplaceholderAPI
         .delete(`/albums/${deletedAlbum?.id}`)
         .then(() => {
-          console.log("selected.id is deleted:", deletedAlbum?.id);
+          // console.log("selected.id is deleted:", deletedAlbum?.id);
           setSearchResults((prevResults) =>
             prevResults.filter((album) => album.id !== deletedAlbum.id)
           );
         })
         .catch((error) => {
-          console.error("Error while deleting album:", error);
+          // console.error("Error while deleting album:", error);
         });
     }
   };
