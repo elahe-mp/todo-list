@@ -27,6 +27,9 @@ const NavBar: React.FC = () => {
           <Button color="inherit" onClick={() => navigate("/gallery")}>
             Gallery
           </Button>
+          <Button color="inherit" onClick={() => navigate("/album")}>
+            Album
+          </Button>
           {/* which one is better the above code with onclick event or the below one? */}
           <Button color="inherit" component={Link} to="/about">
             About Me

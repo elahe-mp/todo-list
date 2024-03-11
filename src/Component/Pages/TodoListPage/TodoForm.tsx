@@ -66,8 +66,6 @@ const TodoForm: React.FC<ITodoForm> = ({
   }, [setValue, selectedId, todoItems, isSubmitSuccessful, reset]);
 
   const onSubmit = (data: FieldValues) => {
-    console.log(todoItems);
-
     // Edit an existing item
     if (selectedId !== null) {
       const updateTodoItems = todoItems.map((item) =>
