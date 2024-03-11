@@ -5,6 +5,8 @@ import { Routes, Route } from "react-router-dom";
 import NavBar from "./Component/NavBar";
 import About from "./Component/Pages/AboutPage/About";
 import NoMatch from "./Component/Pages/NoMatch";
+import PaginatedPosts from "./Component/Pages/PostPage/PaginatedPosts";
+
 // import ImageDetails from "./Component/Pages/GalleryPage/Gallery/ImageDetails";
 const LazyGallery = React.lazy(
   () => import("./Component/Pages/GalleryPage/Gallery")
@@ -36,6 +38,8 @@ function App() {
             </React.Suspense>
           }
         />
+        <Route path="/post" element={<PaginatedPosts />} />
+
         <Route
           path="/album"
           element={

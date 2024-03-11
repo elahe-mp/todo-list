@@ -27,6 +27,9 @@ const NavBar: React.FC = () => {
           <Button color="inherit" onClick={() => navigate("/gallery")}>
             Gallery
           </Button>
+          <Button color="inherit" component={Link} to="/post">
+            Posts
+          </Button>
           <Button color="inherit" onClick={() => navigate("/album")}>
             Album
           </Button>
